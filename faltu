@@ -1,0 +1,30 @@
+Admin menus-
+
+Home
+Rides
+	- Pending rides
+	- Completed rides
+	- Canceled rides
+	- All Rides
+Users
+	- Pending user request
+	- Approved User Request
+	- All User 
+Location
+	- Location List
+	- Add New Location
+Account
+	- ChangePassword
+
+
+User Menus:
+
+Home
+Book new ride
+Rides
+	- Pedning Rides
+	- Completed Rides
+	- All Rides
+Account
+	- Update information
+	- Change Password

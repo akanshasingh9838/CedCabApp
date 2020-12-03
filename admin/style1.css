@@ -1,0 +1,292 @@
+/*https://codepen.io/RonFields/pen/pehJA*/
+*{
+	margin:0;
+	padding:0;
+	user-select: none;
+	box-sizing: border-box;
+	font-family: 'poppins',sans-serif;
+}
+body {
+ 	background-color: #bdd4e7;
+ 	background-image: linear-gradient(315deg, #bdd4e7 0%, #8693ab 74%);
+  	background-size: cover;
+    width: 100%;
+    height: 100%;
+   background-size: cover;
+  
+}
+#main {
+	margin-top: 70px;
+    font-weight:bold;
+}
+#main h1, #main h2{
+	margin-left: 100px;
+	font-weight: bold;
+	margin-bottom: 30px;
+}
+#main h2{
+	margin-left: 90px;
+	margin-bottom: 30px;
+}
+#main.show3{
+	margin-left:250px;
+}
+
+.sidebar {
+  height: auto;
+   min-height: 100%;
+  width: 250px;
+  position: fixed;
+  top: 0;
+  bottom: 2;
+  left:-250px;
+  background:#1b1b1b;
+  transition: left 0.4s ease;
+   
+}
+.sidebar.show{
+	left:0px;
+}
+.sidebar .text{
+	color:white;
+	font-size: 25px;
+	font-weight: 600;
+	line-height: 65px;
+	text-align: center;
+	background: #1e1e1e;
+	letter-spacing: 1px;
+}
+.btn1{
+	position: absolute;
+	top:65px;
+	left:45px;
+	height: 45px;
+	width:45px;
+	background:#1b1b1b;
+	text-align: center;
+	border-radius: 3px;
+	cursor:pointer;
+	transition: left 0.4s ease;
+}
+.btn1.click{
+	left:256px;
+
+}
+.btn1.click span:before{
+	content: '\f00d';
+	}
+
+.btn1 span{
+	color:white;
+	font-size: 28px;
+	line-height: 45px;
+
+}
+nav ul{
+	height: 100%;
+	width: 100%;
+	background: #1b1b1b;
+	list-style: none;
+}
+nav ul li{
+	line-height: 60px;
+	border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+nav ul li a{
+	position: relative;
+	color:white;
+	text-decoration: none;
+	font-size: 18px;
+	padding-left: 40px;
+	font-weight: 500;
+	display: block;
+	width:100%;
+	border-left: 3px solid transparent;
+}
+nav ul li.active a{
+	color:cyan;
+	background: #1e1e1e;
+	border-left-color: cyan;
+}
+nav ul ul{
+	position:static;
+	display:none;
+}
+nav ul .feat-show.show{
+	display: block;
+}
+
+nav ul .serv-show.show1{
+	display: block;
+}
+
+nav ul .loc-show.show2{
+	display: block;
+}
+nav ul .acc-show.show3{
+	display: block;
+}
+
+nav ul ul li{
+	line-height: 42px;
+	border-bottom: none;
+}
+nav ul ul li:last-child{
+	border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+nav ul ul li a{
+	font-size: 17px;
+	color:#e6e6e6;
+	padding-left: 70px;
+}
+nav ul li a span{
+	position: absolute;
+	top:40%;
+	right:20px;
+}
+nav ul li.active ul li a{
+	color:#e6e6e6;
+	background: #1b1b1b;
+	border-left-color: transparent;
+}
+nav ul ul li a span{
+	position:absolute;
+	top:50%;
+	right:20px;
+	transform: translateY(-50%);
+	font-size:22px;
+}
+nav ul ul li a:hover{
+	color:cyan!important;
+	background: #1e1e1e!important;
+}
+nav ul ul li a span.rotate{
+	transform: translate(-50%) rotate(-180deg);
+}
+
+nav ul ul li a:hover span{
+	transform: translateY(-50%) rotate(-180deg);
+}
+
+.card{
+	margin: 0px 20px;
+	background: #312f4d !important;
+}
+
+#form input[type=text]{   /*, select, textarea */
+  width: 50%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+#form label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+  /*color:white;*/
+  color:black;
+  font-weight: bolder;
+}
+
+#form input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin:auto;
+}
+
+#form input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+#form .container {
+  border-radius: 5px;
+  /*background-color: #1b1b1b;*/
+  padding: 20px;
+
+}
+
+#form .col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+#form .col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+#form .row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+ #form .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+table th{
+	background-color: black;
+	color:white;
+}
+
+.row .col-lg-4 .card {
+    background: #1f1f31 !important;
+}
+#request label {
+    margin-left: 131px;
+}
+#request select {
+    padding: 9px;
+    width: 20%;
+    margin: 10px;
+    border-radius: 7px;
+}
+.container{
+	width: 1170px;
+}
+
+
+table th{
+    background-color: black;
+    color:white;
+}
+table{
+    width:auto;
+}
+#request table {
+    /*width: 80%;*/
+    margin: 0 20px !important;
+}
+footer{
+	left: 0;
+	bottom: 0;
+    margin-top:60px;
+    background-color: #11243c;
+    color:white;
+      width:100%;
+     
+}
+
+footer .icons{
+    font-size: 30px;
+
+}
+footer nav a{
+    color:white;
+}
+.col-lg-6
+{
+	margin:auto;
+}
