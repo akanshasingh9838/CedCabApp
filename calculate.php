@@ -9,7 +9,7 @@
 	$drop=$_POST['drop'];
 	$cabtype=$_POST['cabtype'];
 	$luggage=$_POST['luggage'];
-	$_SESSION['ride']=array('pickup'=>$pickup,'drop'=>$drop,'cabtype'=>$cabtype,'luggage'=> $luggage);	
+	$_SESSION['ride']=array('pickup'=>$pickup,'drop'=>$drop,'cab'=>$cabtype,'luggage'=> $luggage);	
  	$loc = new location();
  	$all_loc = $loc-> fetchLocation($dbcon -> conn);
  	// print_r($all_loc);
@@ -17,13 +17,11 @@
  		$distance[$value['name']] = $value['distance'];
  	}	
 	$TotalDistance= abs($distance[$drop] - $distance[$pickup]);
-	$_SESSION['ride']=array('pickup'=>$pickup,'dropup'=>$drop,'cabtype'=>$cabtype,'luggage'=> $luggage,'distance'=>$TotalDistance);
-	// if (isset($_SESSION['ride']) && (time() - $_SESSION['ride'] > 10)) {
-	//     session_unset();     
-	//     session_destroy();  
-	// }
-	// $_SESSION['ride'] = time();
-	
+	$_SESSION['ride']=array('pickup'=>$pickup,'dropup'=>$drop,'cab'=>$cabtype,'luggage'=> $luggage,'distance'=>$TotalDistance);
+
+		$_SESSION['start'] = time();
+        $_SESSION['expire'] = $_SESSION['start'] + (1 * 60);
+		
 	if($cabtype=="CedMicro"){
 		$fare+=50;
 		if($TotalDistance<=10){

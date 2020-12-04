@@ -39,11 +39,23 @@ $noUserLocations= $ride -> noUserLocations($dbcon-> conn,$id);
 
 </head>
 <body>
+   <header class="headerall">
+        <nav class="navbar navbar-expand-lg navbar-light p-3 ">
+          <a href="index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3" aria-hidden="true"></i><span class="display-5 text-success cab">CedCab</span></a>
+          <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar_menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- <a href="index.php" class = "btn btn-success ml-auto mr-5">Back To Home</a> -->
+          <a href="user_dashboard.php?logid=logout" class="btn btn-primary ml-auto mr-5" >Log OUT</a>
+        </nav>
+      </header>
+
   <div class="btn1">
     <span class="fa fa-bars"></span>
   </div>
   <nav class= "sidebar">
-    <a href="#" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3" aria-hidden="true"></i><span class="display-5 text-success cab">CedCab</span></a>
+    <a href="#" class="navbar-brand pl-5 mt-3"><i class="fa fa-taxi mr-3" aria-hidden="true"></i><span class="display-5 text-success cab">CedCab</span></a>
+
     <ul>
       <li><a href="user_dashboard.php" >Home</a></li>
       <li><a href="index.php" >Book New Ride</a></li>
@@ -63,17 +75,18 @@ $noUserLocations= $ride -> noUserLocations($dbcon-> conn,$id);
       </li> 
     </ul>
   </nav>
-   <a href="#" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3" aria-hidden="true"></i><span class="display-5 text-success cab">CedCab</span></a>
+   
   <div id="main">
+
+
+
     <section id="pendingrequest">
     </section>
 
     <section id="request">
     </section>
       
-    <h1><?php echo "Welcome " .$_SESSION['userdata']['username'] ?>
-    
-    <a href="user_dashboard.php?logid=logout" class="btn btn-primary float-right mr-5" >Log OUT</a></h1>
+    <h1 class="text-center wlcmhead"><?php echo "Welcome " .$_SESSION['userdata']['username'] ?> "!!"</h1>
     <?php if(isset($_SESSION['ride'])){
       echo "<center><h2>Your Ride Is Pending</h2></center>";
     }
@@ -87,7 +100,7 @@ $noUserLocations= $ride -> noUserLocations($dbcon-> conn,$id);
       <div class="card-header">Ride</div>
       <div class="card-body">
         <h5 class="card-title">Total Expenditure</h5>
-        <p class="card-text"><?php print_r($totalUserExpend[0]) ?></p>
+        <p class="card-text"><?php print_r($totalUserExpend[0]) ?>  Rs.</p>
       </div>
        <div class="card-footer"><a href="userfunc.php?allrides=allrides" >Get More Details</a></div>
     </div>
@@ -97,6 +110,9 @@ $noUserLocations= $ride -> noUserLocations($dbcon-> conn,$id);
         <h5 class="card-title">Your Total Rides</h5>
         <p class="card-text"><?php echo $numtotalUserRides ?></p>
       </div>
+
+
+
       <div class="card-footer"><a href="userfunc.php?allrides=allrides" >Get More Details</a></div>
     </div>
   </div>
@@ -140,6 +156,29 @@ $noUserLocations= $ride -> noUserLocations($dbcon-> conn,$id);
     </div>
   </div>
   </div>
+
+  <?php if(isset($_SESSION['ride'])){ ?>
+  <div class= "container text-center">
+      <h2>Last Pending Ride Details</h2>
+      <div class="row text-center">
+        <div class="col">
+          <section id="request">
+              <table class="table table-bordered ml-5 mr-5">
+                <tr><th>Pick Up Location </th><td><?php echo $_SESSION['ride']['pickup']; ?></td> </tr>
+                <tr><th>Drop Up Location</th><td><?php echo $_SESSION['ride']['dropup'] ?></td></tr>
+                <tr> <th>Cab Type</th><td><?php echo $_SESSION['ride']['cab'] ?></td></tr>
+                <tr><th>Luggage Weight</th><td><?php echo $_SESSION['ride']['luggage'] ?></td> </tr>
+                              
+                <tr> <th>Distance Travelled</th><td><?php echo $_SESSION['ride']['distance'] ?></td></tr>
+              
+                <tr><th>Total Fare</th><td><?php echo $_SESSION['ride']['fare'] ?></td></tr>                                
+                </table>
+          </section>      
+        </div>
+      </div>
+    </div>
+<?php } ?>
+
    <footer class="text-center">
       <div class="row pt-4">
         <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4  icons">

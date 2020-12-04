@@ -21,9 +21,15 @@
     if ($_POST['action'] == 'changepass') {
         $oldpass = $_POST['oldpass'];
         $newpass = $_POST['newpass'];
-        $msg = $user->changeUserPassword($oldpass, $newpass , $uid, $dbcon->conn);
-        // session_destroy();
-        echo $msg;
+        if($oldpass == $newpass){
+            $msg = false;
+            echo $msg;
+        }
+        else{
+            $msg = $user->changeUserPassword($oldpass, $newpass , $uid, $dbcon->conn);
+            // session_destroy();
+            echo $msg;
+        }
     }
 
 

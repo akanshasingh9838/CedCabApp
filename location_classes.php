@@ -32,13 +32,25 @@ class location{
     }
 
     function addLocation($loc,$dis,$conn){
+        $sql = "SELECT * FROM tbl_location WHERE `name`='$loc' LIMIT 1";
+        $this -> result = $conn->query($sql);
+
+        if ($this-> result->num_rows > 0) {
+    
+            while($row = $this -> result->fetch_assoc()) {              
+                if($row["name"]==$loc){
+                    return "false";
+                }
+            }
+        }
+        
         $sql = 'INSERT INTO tbl_location(`name`,`distance`,`is_available`)VALUES("'.$loc.'","'.$dis.'","1")';
             if ($conn -> query($sql) === TRUE) {
-                return "Location is added Successfully";
+                return "true";
             }
 
             else {
-               return "There is some error in entering ur location";
+               echo "There is some error in entering ur location";
             }                
     }
 

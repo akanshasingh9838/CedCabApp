@@ -7,13 +7,21 @@
 	font-family: 'poppins',sans-serif;
 }
 body {
- 	background-color: #bdd4e7;
+ 	background-color: #1a3254;
  	background-image: linear-gradient(315deg, #bdd4e7 0%, #8693ab 74%);
   	background-size: cover;
     width: 100%;
     height: 100%;
    background-size: cover;
   
+}
+.headerall{
+    background-color:  #11243c;
+   
+    position: absolute;
+     top:0;
+     width:100%;
+     margin-bottom: 60px;
 }
 #main {
 	margin-top: 70px;
@@ -58,7 +66,7 @@ body {
 }
 .btn1{
 	position: absolute;
-	top:65px;
+	top:75px;
 	left:45px;
 	height: 45px;
 	width:45px;

@@ -10,7 +10,7 @@ if(isset($_GET['bookid'])){
   if(isset($_SESSION['userdata'])){
     $bookdetails = new Ride();
     $b=$bookdetails -> insertBookDetails($dbcon->conn);
-    echo $b;
+    echo "<script>alert('".$b."')</script>";
   }
    else{
      header('Location: login.php');
@@ -117,18 +117,18 @@ $Location = new location();
                         <div class="form-group">
                             <select class="form-control g" id="cabtype">
                               <option selected disabled>Drop down to select CAB Type</option>
-                              <option>CedMicro</option>
-                              <option>CedMini</option>
-                              <option>CedRoyal</option>
-                              <option>CedSUV</option>
+                              <option value = "cedMicro">CedMicro</option>
+                              <option value = "cedMini">CedMini</option>
+                              <option value = "cedRoyal">CedRoyal</option>
+                              <option value = "cedSUV">CedSUV</option>
                             </select>
                         </div>
 
                          <div class="form-group">
-                            <input type="text" class="form-control" id="luggage" onkeypress="return onlynumber(event)" placeholder="Enter weight of luggage in kg">
+                            <input type="text"  class="form-control" id="luggage" onkeypress="return onlynumber(event)" placeholder="Enter weight of luggage in kg">
                         </div>
 
-                        <button type="button" id="button" class="btn btn-success btn-block btn-lg">Calculate Fare</button>
+                        <button type="button" id="button" class="btn btn-success btn-block btn-lg" >Calculate Fare</button>
                         <div class="form-group mt-3">
                             <input type="text"  class="form-control text-center" id="fare" disabled>
                             

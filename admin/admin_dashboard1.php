@@ -44,6 +44,18 @@ $numNotAvailLocation = $location -> notAvailableLocation($dbcon-> conn);
 	  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </head>
 <body>
+	<!--  <a href="../index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3 h2" aria-hidden="true"></i><span class="h2 text-primary cab">CedCab</span></a>
+	 <a href="admin_dashboard1.php?logid=logout" class="btn btn-primary float-right mr-3 mt-3" >Log OUT</a></h1> -->
+	<header class="headerall">
+        <nav class="navbar navbar-expand-lg navbar-light p-3 ">
+          <a href="../index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3 text-primary" aria-hidden="true"></i><span class="h4 text-primary cab">CedCab</span></a>
+          <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar_menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a href="admin_dashboard1.php?logid=logout" class="btn btn-primary ml-auto" >Log OUT</a>
+        </nav>
+      </header>
+
 	<div class="btn1">
 		<span class="fa fa-bars"></span>
 	</div>
@@ -85,8 +97,7 @@ $numNotAvailLocation = $location -> notAvailableLocation($dbcon-> conn);
 			</li>	
 		</ul>
 	</nav>
-	 <a href="../index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3 h2" aria-hidden="true"></i><span class="h2 text-primary cab">CedCab</span></a>
-	 <a href="admin_dashboard1.php?logid=logout" class="btn btn-primary float-right mr-3 mt-3" >Log OUT</a></h1>
+
 	<div id="main">
 	  <section id="pendingrequest">
 	  </section>

@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $('.approve').click(function(){
-      var id = $(this).data('id')
+      var id = $(this).data('id');
       $.ajax({
         url : 'ajaxRequest.php',
         type : 'POST',
@@ -147,6 +147,18 @@ $(document).ready(function(){
                         var oldpass = $('#oldpass').val();
                         var newpass = $('#newpass').val();
                         var repass = $('#repass').val();
+
+                        if (oldpass == "") {
+                            alert('Old pssword is required field !');
+                            return false;
+                        } else if (newpass == "") {
+                            alert('New pssword is required field !');
+                            return false;
+                        } else if (repass == "") {
+                            alert('Confirm pssword is required field !');
+                            return false;
+                        }
+
                         if (newpass != repass){
                             alert("Confirm Password Should be Same");
                         }
@@ -198,7 +210,7 @@ $(document).ready(function(){
                     // console.log(msg['ride_date']);
                     // console.log(msg[0]['ride_date']);
                     
-                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
+                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Cab Type</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th><th>Invoice</th></tr>";
                     sr = 1;
                     for (var i = 0; i < msg.length; i++) {
                         if (msg[i]['status']==1) {
@@ -211,7 +223,7 @@ $(document).ready(function(){
                             status = "Cancelled";
                         }
     
-                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
+                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['cab']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
                     }
                     html += "</table>";
                     $('#allRideResult').html(html);
@@ -242,7 +254,7 @@ $(document).ready(function(){
                     // console.log(msg['ride_date']);
                     // console.log(msg[0]['ride_date']);
                     
-                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th><th>Invoice</th></tr>";
+                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Cab Type</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th><th>Invoice</th></tr>";
                     sr = 1;
                     for (var i = 0; i < msg.length; i++) {
                         if (msg[i]['status']==1) {
@@ -255,7 +267,7 @@ $(document).ready(function(){
                             status = "Cancelled";
                         }
     
-                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td><td><a href ='adminfunc.php?invoiceid= "+msg[i]['ride_id']+ " & invoice=invoice>Check Invoice</a>'</td></tr>";
+                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['cab']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td><td><a href ='adminfunc.php?invoiceid= "+msg[i]['ride_id']+ " & invoice=invoice>Check Invoice</a>'</td></tr>";
                     }
                     html += "</table>";
                     $('#allRideResult').html(html);
@@ -282,7 +294,7 @@ $(document).ready(function(){
                     // alert(msg);
                     console.log(msg);
                     
-                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th><th>Action</th></tr>";
+                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Cab Type</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th><th>Action</th></tr>";
                     sr = 1;
                     for (var i = 0; i < msg.length; i++) {
                         if (msg[i]['status']==1) {
@@ -295,17 +307,14 @@ $(document).ready(function(){
                             status = "Cancelled";
                         }
     
-                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td><td><button class='approve' data-id='"+msg[i]['ride_id']+"' type='button'>Approve</button><button class ='cancel' data-id='"+ msg[i]['ride_id']+"' type='button' >Cancel</button><button class ='delete' type='button' data-id='"+msg[i]['ride_id']+"'>Delete</button></td></tr>";
+                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['cab']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td><td><button class='approve' data-id='"+msg[i]['ride_id']+"' type='button'>Approve</button><button class ='cancel' data-id='"+ msg[i]['ride_id']+"' type='button' >Cancel</button><button class='delete' type='button' data-id='"+msg[i]['ride_id']+"'>Delete</button></td></tr>";
                     }
                     html += "</table>";
                     $('#allRideResult').html(html);
                 }
             });
         });
-
-
         
-         
          $('.sortCompletedRide').change(function(){
             // alert('hii');
             $('#allRide').hide();
@@ -328,7 +337,7 @@ $(document).ready(function(){
                     // console.log(msg['ride_date']);
                     // console.log(msg[0]['ride_date']);
                     
-                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
+                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>CabType</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
                     sr = 1;
                     for (var i = 0; i < msg.length; i++) {
                         if (msg[i]['status']==1) {
@@ -341,7 +350,7 @@ $(document).ready(function(){
                             status = "Cancelled";
                         }
     
-                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
+                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['cab']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
                     }
                     html += "</table>";
                     $('#allRideResult').html(html);
@@ -371,7 +380,7 @@ $(document).ready(function(){
                     // console.log(msg['ride_date']);
                     // console.log(msg[0]['ride_date']);
                     
-                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
+                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Cab Type</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
                     sr = 1;
                     for (var i = 0; i < msg.length; i++) {
                         if (msg[i]['status']==1) {
@@ -384,7 +393,7 @@ $(document).ready(function(){
                             status = "Cancelled";
                         }
     
-                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
+                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['cab']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
                     }
                     html += "</table>";
                     $('#allRideResult').html(html);
@@ -414,7 +423,7 @@ $(document).ready(function(){
                     // console.log(msg['ride_date']);
                     // console.log(msg[0]['ride_date']);
                     
-                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
+                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>CabType</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
                     sr = 1;
                     for (var i = 0; i < msg.length; i++) {
                         if (msg[i]['status']==1) {
@@ -427,7 +436,7 @@ $(document).ready(function(){
                             status = "Cancelled";
                         }
     
-                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
+                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['cab']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
                     }
                     html += "</table>";
                     $('#allRideResult').html(html);
@@ -521,5 +530,44 @@ $(document).ready(function(){
                 }
             });
         });
+
+         $('.filterCancelledRide').change(function(){
+            // alert('hii');
+            $('#allRide').hide();
+            let selectData = $(this).val();
+            // alert($selectData);
+
+            $.ajax({
+                url : 'ajaxRequest.php',
+                type : 'POST',
+                data : {
+                    sdata : selectData,
+                    action : 'filterCancelledRide'
+                },
+                dataType : 'JSON',
+                success : function(msg) 
+                {
+                    console.log(msg);
+                    
+                    var html = "<table class='table table-bordered ml-5 mr-5'><tr><th>Sr.No.</th><th>Ride Date</th><th>Pickup Location</th><th>Drop Location</th><th>CabType</th><th>Total Distance</th><th>Luggage Weight</th><th>Total Fare</th><th>Status</th></tr>";
+                    sr = 1;
+                    for (var i = 0; i < msg.length; i++) {
+                        if (msg[i]['status']==1) {
+                            status = "Pending..";
+                        } else if (msg[i]['status'] == 2) {
+                            // var status = document.write("Approved");
+                            status = "Approved";
+                        } else {
+                            // var status = document.write('Cancelled');
+                            status = "Cancelled";
+                        }
+    
+                        html += "<tr><td>"+ sr++ +"</td><td>"+msg[i]['ride_date']+"</td><td>"+msg[i]['pickup']+"</td><td>"+msg[i]['dropup']+"</td><td>"+msg[i]['cab']+"</td><td>"+msg[i]['total_distance']+"</td><td>"+msg[i]['luggage']+"</td><td>"+msg[i]['total_fare']+"</td><td>"+status+"</td></tr>";
+                    }
+                    html += "</table>";
+                    $('#allRideResult').html(html);
+                }
+            });
+        }); 
 
   });

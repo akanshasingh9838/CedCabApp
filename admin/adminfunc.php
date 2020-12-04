@@ -37,10 +37,20 @@ if(isset($_GET['allrides']) && $_GET['allrides'] == 'allrides'){
 }
 
 if(isset($_POST['submit'])){
-	$lname= $_POST['lname'];
-	$dist=$_POST['dist'];
+	$lname= trim($_POST['lname']);
+	$dist=trim($_POST['dist']);
 	$msg = $location-> addLocation($lname,$dist,$dbcon-> conn);
-	echo $msg;
+	if($msg == "false"){
+		echo "<script>alert('Location already exists')</script>";
+
+	}
+	else if($msg == "true"){
+		echo "<script>alert('Location Added')</script>";
+	}
+	else{
+		echo "<script>alert('There is some error in entering your location')</script>";
+	}
+
 }	
 if(isset($_GET['pendingrides']) && $_GET['pendingrides'] == 'pendingrides'){  
   $pendingrides =$rideobj -> pendingRide($dbcon-> conn);
@@ -86,6 +96,21 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </head>
 <body>
+	<header class="headerall">
+        <nav class="navbar navbar-expand-lg navbar-light p-3 ">
+          <a href="../index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3 text-primary" aria-hidden="true"></i><span class="h4 text-primary cab">CedCab</span></a>
+          <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar_menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a href="admin_dashboard1.php" class = "btn btn-primary ml-auto">Dashboard</a>
+          <a href="admin_dashboard1.php?logid=logout" class="btn btn-primary ml-3" >Log OUT</a>
+        </nav>
+      </header>
+
+      <!-- <a href="../index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3 h2 " aria-hidden="true"></i><span class="h2 text-primary cab">CedCab</span></a> -->
+	 <!--  	<a href="admin_dashboard1.php" class="btn btn-primary float-right mr-5 mt-3" >Dashboard</a>
+	  	<a href="admin_dashboard1.php?logid=logout" class="btn btn-primary float-right mr-5 mt-3" >Log OUT</a> -->
+
 	<div class="btn1">
 		<span class="fa fa-bars"></span>
 	</div>
@@ -127,15 +152,10 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 			</li>	
 		</ul>
 	</nav>
-		<a href="../index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3 h2 " aria-hidden="true"></i><span class="h2 text-primary cab">CedCab</span></a>
-	  	<a href="admin_dashboard1.php" class="btn btn-primary float-right mr-5 mt-3" >Dashboard</a>
-	  	<a href="admin_dashboard1.php?logid=logout" class="btn btn-primary float-right mr-5 mt-3" >Log OUT</a>
+		
 
 	<div id="main">
-	 <h1 class="text-center"><?php echo "Welcome " .$_SESSION['admindata']['adminname'] ?> in  Admin Panel
-	<!--  <a href="admin_dashboard1.php" class="btn btn-primary float-right mr-5" >Dashboard</a>
-	  <a href="admin_dashboard1.php?logid=logout" class="btn btn-primary float-right mr-5" >Log OUT</a> -->
-	</h1>
+	 <h1 class="text-center"><?php echo "Welcome " .$_SESSION['admindata']['adminname'] ?> in  Admin Panel</h1>
 	  
 		<p id="result"></p>
 	<?php if(isset($_GET['pendingrequest']) && $_GET['pendingrequest'] == 'pendingrequest'){  ?>
@@ -147,6 +167,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 			  <option value="usernameAsc">By Username (Ascending Order)</option>
 			  <option value="usernameDsc">By Username (Descending Order)</option>
 			  </select>
+			  <a href="adminfunc.php?pendingrequest=pendingrequest" class="btn btn-danger " >Remove Sorting</a>
 		    <table id="allRideResult" class="table table-bordered ml-5 mr-5">
 	        <tr>
 	          <th>Sr.No. </th>
@@ -180,6 +201,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 			  <option value="usernameAsc">By Username (Ascending Order)</option>
 			  <option value="usernameDsc">By Username (Descending Order)</option>
 			  </select>
+			   <a href="adminfunc.php?alluser=alluser" class="btn btn-danger " >Remove Sorting</a>
 		    <table id="allRideResult" class="table table-bordered ml-5 mr-5">					
 	        <tr>
 	          <th>Sr.No. </th>
@@ -223,6 +245,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 			  <option value="usernameAsc">By Username (Ascending Order)</option>
 			  <option value="usernameDsc">By Username (Descending Order)</option>
 			  </select>
+			   <a href="adminfunc.php?approveduser=approveduser" class="btn btn-danger " >Remove Sorting</a>
 		    <table id="allRideResult" class="table table-bordered ml-5 mr-5">				    
 	        <tr>
 	          <th>Sr.No. </th>
@@ -307,32 +330,24 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	<?php } ?>
 
 	<?php if(isset($_GET['addlocation']) && $_GET['addlocation'] == 'addlocation'){ ?> 
-		<h2>ADD YOUR LOCATION</h2>
 		<section id="form">
-		    <div class="container">
-		    	
-		  <form action="" method="post"> 
- 			  <div class="row">
-			    <div class="col-25">
-			      <label for="fname">Location Name</label>
-			    </div>
-			    <div class="col-75">
-			      <input type="text" id="lname" name="lname" placeholder="Location name..">
-			    </div>
-			  </div>
-			  <div class="row">
-			    <div class="col-25">
-			      <label for="lname">Location Distance</label>
-			    </div>
-			    <div class="col-75">
-			      <input type="text" id="dist" name="dist" placeholder="Distance from charbagh..">
-			    </div>
-			  </div>
-			  <div class="row">
-			    <input type="submit" value="Add Location" name="submit">
-			  </div>
-			  </form>
+		<div class="container">
+			<div class="row ml-5">
+				<div class="col-lg-8 m-auto">
+				<form action="" method="post" class="ml-5"> 
+				<div class="form-group">
+					<label for="fname">Location Name</label>
+					<input type="text" class="form-control" id="lname" name="lname" placeholder="Location name.." aria-describedby="emailHelp" placeholder="Enter Old Password">
+				</div>
+				<div class="form-group">
+					<label for="lname">Location Distance</label>
+					<input type="text" class="form-control" id="dist" name="dist" placeholder="Distance from charbagh..">
+				</div>
+				  <button type="submit" class="btn btn-primary" name="submit" >Add Location</button>
+				</form>
+				</div>
 			</div>
+		</div>
 		</section>
 	<?php } ?>
 
@@ -343,15 +358,22 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 		 <label for="">Sort</label>
 			<select class="sortPendingRide" >
 			  <option value="">select</option>
-			  <option value="ride_date">By Ride Date</option>
-			  <option value="total_fare">By Fare</option>
+			  <option value="descride_date">By Ride Date In DESC Order</option>
+	          <option value="ascride_date">By Ride Date In ASC Order</option>
+	          <option value="desctotal_fare">By Fare In DESC Order</option>
+	          <option value="asctotal_fare">By Fare In ASC Order</option>
 			  </select>
 			<label for="">Filter</label>
 			  <select class="filterPendingRide" >
 			  <option value="">select</option>
-			  <option value="week">Last Week</option>
+			    <option value="week">Last Week</option>
 			  <option value="month">Last Month</option>
+	          <option value="cedSUV">Ced SUV</option>
+	          <option value="cedMicro">Ced Micro</option>
+	          <option value="cedMini">Ced Mini</option>
+	          <option value="cedRoyal">Ced Royal</option>
 		  	</select>
+		  	  <a href="adminfunc.php?pendingrides=pendingrides" class="btn btn-danger " >Remove Filtering and Sorting</a>
 		 <div id="allRideResult"></div>
 		    <table id="allRide" class="table table-bordered ml-5 mr-5">
 	        <tr>
@@ -359,6 +381,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	          <th>Ride Date</th>
 	          <th>Pickup Location</th>
 	          <th>Drop Location</th>
+	            <th>CabType</th>
               <th>Distance Travelled</th>
               <th>Luggage</th>
               <th>Total Fare</th>
@@ -373,6 +396,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	            <td><?php echo $row['ride_date'] ?></td>
 	            <td><?php echo $row['pickup'] ?></td>
 	            <td><?php echo $row['dropup'] ?></td>
+	             <td><?php echo $row['cab'] ?></td>
 	            <td><?php echo $row['total_distance'] ?></td>
 	            <td><?php echo $row['luggage'] ?></td>
 	            <td><?php echo $row['total_fare'] ?></td>
@@ -394,15 +418,22 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 		 <label for="">Sort</label>
 			<select class="sortCompletedRide" >
 			  <option value="">select</option>
-			  <option value="ride_date">By Ride Date</option>
-			  <option value="total_fare">By Fare</option>
+			  <option value="descride_date">By Ride Date In DESC Order</option>
+              <option value="ascride_date">By Ride Date In ASC Order</option>
+              <option value="desctotal_fare">By Fare In DESC Order</option>
+              <option value="asctotal_fare">By Fare In ASC Order</option>
 			  </select>
 			<label for="">Filter</label>
 			  <select class="filterPendingRide" >
 			  <option value="">select</option>
-			  <option value="week">Last Week</option>
-			  <option value="month">Last Month</option>
+			   <option value="week">Last Week</option>
+              <option value="month">Last Month</option>
+              <option value="cedSUV">Ced SUV</option>
+              <option value="cedMicro">Ced Micro</option>
+              <option value="cedMini">Ced Mini</option>
+              <option value="cedRoyal">Ced Royal</option>
 		  	</select>
+		  	<a href="adminfunc.php?completedrides=completedrides" class="btn btn-danger " >Remove Filtering and Sorting</a>
 		 <div id="allRideResult"></div>
 		    <table id="allRide" class="table table-bordered ml-5 mr-5">
 	        <tr>
@@ -427,7 +458,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	            <td><?php echo $row['luggage'] ?></td>
 	            <td><?php echo $row['total_fare'] ?></td>
 	             <td><?php if ($row['status'] == 2) {echo "Completed";}  ?></td>
-	            
+            	
 	          </tr>
 	        <?php } ?>
 	      	</table>
@@ -442,15 +473,23 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 		 <label for="">Sort</label>
 			<select class="sortCancelledRide" >
 			  <option value="">select</option>
-			  <option value="ride_date">By Ride Date</option>
-			  <option value="total_fare">By Fare</option>
+			   <option value="descride_date">By Ride Date In DESC Order</option>
+              <option value="ascride_date">By Ride Date In ASC Order</option>
+              <option value="desctotal_fare">By Fare In DESC Order</option>
+              <option value="asctotal_fare">By Fare In ASC Order</option>
 			  </select>
-			<!-- <label for="">Filter</label>
-			  <select class="filterPendingRide" >
+			<label for="">Filter</label>
+			  <select class="filterCancelledRide" >
 			  <option value="">select</option>
-			  <option value="week">Last Week</option>
-			  <option value="month">Last Month</option>
-		  	</select> -->
+			 <option value="week">Last Week</option>
+              <option value="month">Last Month</option>
+              <option value="cedSUV">Ced SUV</option>
+              <option value="cedMicro">Ced Micro</option>
+              <option value="cedMini">Ced Mini</option>
+              <option value="cedRoyal">Ced Royal</option>
+		  	</select>
+		  	<a href="adminfunc.php?cancelledrides=cancelledrides" class="btn btn-danger " >Remove Filtering and Sorting</a>
+
 		 <div id="allRideResult"></div>
 		    <table id="allRide" class="table table-bordered ml-5 mr-5">
 	        <tr>
@@ -458,6 +497,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	          <th>Ride Date</th>
 	          <th>Pickup Location</th>
 	          <th>Drop Location</th>
+	          <th>Cab Type</th>
               <th>Distance Travelled</th>
               <th>Luggage</th>
               <th>Total Fare</th>
@@ -471,6 +511,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	            <td><?php echo $row['ride_date'] ?></td>
 	            <td><?php echo $row['pickup'] ?></td>
 	            <td><?php echo $row['dropup'] ?></td>
+	            <td><?php echo $row['cab'] ?></td>
 	            <td><?php echo $row['total_distance'] ?></td>
 	            <td><?php echo $row['luggage'] ?></td>
 	            <td><?php echo $row['total_fare'] ?></td>
@@ -489,15 +530,22 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
 	 <label for="">Sort</label>
 		<select class="sortAllRide" >
 		  <option value="">select</option>
-		  <option value="ride_date">By Ride Date</option>
-		  <option value="total_fare">By Fare</option>
+		   <option value="descride_date">By Ride Date In DESC Order</option>
+              <option value="ascride_date">By Ride Date In ASC Order</option>
+              <option value="desctotal_fare">By Fare In DESC Order</option>
+              <option value="asctotal_fare">By Fare In ASC Order</option>
 		  </select>
 		<label for="">Filter</label>
 		  <select class="filterAllRide" >
 		  <option value="">select</option>
 		  <option value="week">Last Week</option>
-		  <option value="month">Last Month</option>
+              <option value="month">Last Month</option>
+              <option value="cedSUV">Ced SUV</option>
+              <option value="cedMicro">Ced Micro</option>
+              <option value="cedMini">Ced Mini</option>
+              <option value="cedRoyal">Ced Royal</option>
 	  	</select>
+	  	<a href="adminfunc.php?allrides=allrides" class="btn btn-danger">Remove Filtering and Sorting</a>
 		 <div id="allRideResult"></div>
         <table  id="allRide" class="table table-bordered ml-5 mr-5">
           <tr>
@@ -538,7 +586,7 @@ if(isset($_GET['invoice']) && $_GET['invoice'] == 'invoice'){
   		<h2 class="text-center ">CHANGE YOUR PASSWORD</h2>
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-8">
+				<div class="col-lg-8 m-auto">
 				<form>
 				<div class="form-group">
 					<label for="oldpass">Old Password </label>

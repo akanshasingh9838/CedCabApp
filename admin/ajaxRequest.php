@@ -120,6 +120,14 @@
         print_r(json_encode($alldata));
     }
 
+    if ($_POST['action'] == 'filterCancelledRide') {
+        $sdata = $_POST['sdata'];
+
+        $filterCancelledRide = $ride->filterCancelledRide($sdata, $dbcon->conn);
+        echo json_encode($filterCancelledRide);
+
+    }
+
     if ($_POST['action'] == 'sortApprovedUsersName') {
         $sdata = $_POST['sdata'];
         $alldata = $user->sortApprovedUsersName($sdata, $dbcon->conn);
@@ -129,7 +137,7 @@
 
     if ($_POST['action'] == 'sortAllUsersName') {
         $sdata = $_POST['sdata'];
-        $alldata = $user->sortApprovedUsersName($sdata, $dbcon->conn);
+        $alldata = $user->sortAllUsersName($sdata, $dbcon->conn);
         // print_r($allRide);
         print_r(json_encode($alldata));
     }

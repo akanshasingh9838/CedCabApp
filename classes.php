@@ -15,15 +15,17 @@ Class User{
 
 	function login($username,$password,$conn){
 		$count=0;
-		$errors=array();		
+		$errors=array();
+		if(isset($_SESSION['userdata'])|| isset($_SESSION['admindata'])){
+			return "falsee";
+		}		
+		else{
 			$sql = "SELECT * FROM tbl_user WHERE `user_name`='$username' AND `password`= '$password'";
 			$this -> result = $conn -> query($sql); 
 			if ($this -> result -> num_rows > 0) {
 				// output data of each row
 			
 				while($row = $this -> result->fetch_assoc()) {
-					echo "login successfully";
-						
 					if($row['isadmin'] == "1"){
 
 						$_SESSION['admindata']=array('adminname'=>$row['user_name'],'admin_id'=>$row['user_id']);
@@ -43,7 +45,13 @@ Class User{
 								//to book a ride if login after calculating fare ,and clicked on book fare 
 							setcookie('username',$row['user_name'],time()+60*60*7);
 								if(isset($_SESSION['ride'])){
-									return "ride_created";
+									$now = time();
+									if ($now < $_SESSION['expire']) {
+										return "ride_created";
+									} else {
+										unset($_SESSION['expire']);
+										header('location: index.php');
+									}
 			
 								}
 								
@@ -52,18 +60,18 @@ Class User{
 						}		
 						else {
 							
-							echo "You are blocked by the admin";
+							echo "<script> alert('You are blocked by the admin'); </script>";
 							$errors[]=array('input'=>'form','msg'=>'Your Request is Pending');		
 						}
 					}
 				}
 			} 
 			else {
-				echo "<center><h3>Invalid Login Details </h3></center>";
+				echo "<script> alert('Invalid Login Details'); </script>";
 			}
 			
 			$conn->close();
-		 
+		} 
 	}
 
 	function signup($user_name,$name,$password,$mobile,$dateofsignup,$conn){
@@ -81,7 +89,7 @@ Class User{
 			}
 		}
 		
-			$sql='INSERT INTO tbl_user(`user_name`,`name`,`password`,`mobile`,`dateofsignup`,`isblock`,`isadmin`)VALUES("'.$user_name.'","'.$name.'",MD5("'.$password.'"),"'.$mobile.'","'.$dateofsignup.'","1","0")';
+			$sql='INSERT INTO tbl_user(`user_name`,`name`,`password`,`mobile`,`dateofsignup`,`isblock`,`isadmin`)VALUES("'.$user_name.'","'.$name.'","'.$password.'","'.$mobile.'","'.$dateofsignup.'","1","0")';
 	        if ($conn->query($sql) === TRUE) {
 				// $message="New record created successfully";
 				echo "<center><h3>Your request id is pending , Please wait till confirmation..Thank You....</h3></center>";
@@ -167,7 +175,7 @@ Class User{
             	return true;
             }
         } else {
-           echo "center><h3>Incorrent Old Password !</h3></center>";
+           $msg = "center><h3>Incorrent Old Password !</h3></center>";
         }
         return $msg;
 	}
@@ -185,11 +193,11 @@ Class User{
 	}
 	
 	function changeInfo($name, $password, $mobile, $user_id,$conn){
-		$sql = "UPDATE `tbl_user` SET `name` = '$name' ,`password` = MD5('$password') , `mobile` = 'mobile' WHERE `user_id` = '$user_id' ";
+		$sql = "UPDATE `tbl_user` SET `name` = '$name' ,`password` ='$password' , `mobile` = 'mobile' WHERE `user_id` = '$user_id' ";
 		if (mysqli_query($conn, $sql)) {
-			$msg = "Enteries are updated";
+			$msg = "True";
 		} else {
-			$msg = "Updation Failed !";
+			$msg = "False";
 		}
 		return $msg;
 	}

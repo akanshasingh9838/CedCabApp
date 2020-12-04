@@ -13,7 +13,7 @@ class Ride{
 
 	function insertBookDetails($conn){
 		$ridedate = date('Y-m-d');
-		$sql='INSERT INTO tbl_ride(`ride_date`,`pickup`,`dropup`,`cabtype`,`total_distance`,`luggage`,`total_fare`,`status`,`customer_user_id`)VALUES("'.$ridedate.'","'.$_SESSION['ride']['pickup'].'","'.$_SESSION['ride']['dropup'].'","'.$_SESSION['ride']['cabtype'].'","'.$_SESSION['ride']['distance'].'","'.$_SESSION['ride']['luggage'].'","'. $_SESSION['ride']['fare'].'","1","'.$_SESSION['userdata']['user_id'].'")';
+		$sql='INSERT INTO tbl_ride(`ride_date`,`pickup`,`dropup`,`cab`,`total_distance`,`luggage`,`total_fare`,`status`,`customer_user_id`)VALUES("'.$ridedate.'","'.$_SESSION['ride']['pickup'].'","'.$_SESSION['ride']['dropup'].'","'.$_SESSION['ride']['cab'].'","'.$_SESSION['ride']['distance'].'","'.$_SESSION['ride']['luggage'].'","'. $_SESSION['ride']['fare'].'","1","'.$_SESSION['userdata']['user_id'].'")';
 		
         if ($conn->query($sql) === TRUE) {
 			return "Your Ride is Pending";
@@ -163,10 +163,16 @@ class Ride{
 
 	function sortAllRide($data, $conn) {
 		$row = array();
-        if ($data == 'ride_date') {
-            $sql = "SELECT * FROM `tbl_ride` ORDER BY `ride_date` DESC  ";
-        } else {
+        if ($data == 'descride_date') {
+            $sql = "SELECT * FROM `tbl_ride` ORDER BY `ride_date` DESC ";
+        } else if ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride` ORDER BY `ride_date` ASC ";
+        } else if ($data == 'desctotal_fare') {
             $sql = "SELECT * FROM `tbl_ride` ORDER BY `total_fare` DESC ";
+        } else if ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` ORDER BY `total_fare` ASC ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride`";
         }
         // return $sql;
         // exit();
@@ -184,7 +190,17 @@ class Ride{
         if ($sdata == 'week') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 7 DAY) ORDER BY `ride_date`";
         } else if ($sdata == 'month') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE MONTH(`ride_date`) = MONTH(DATE_ADD(NOW(), INTERVAL -1 MONTH))";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) ORDER BY `ride_date`";
+        } else if ($sdata == 'cedSUV') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedSUV' ";
+        }else if ($sdata == 'cedMini') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMini' ";
+        }else if ($sdata == 'cedRoyal') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedRoyal' ";
+        } else if ($sdata == 'cedMicro') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMicro' ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id'";
         }
         // return $sql;
         // exit();
@@ -197,10 +213,16 @@ class Ride{
 
 	function sortUserAllRide($data, $conn, $id) {
 		$row = array();
-        if ($data == 'ride_date') {
+        if ($data == 'descride_date') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' ORDER BY `ride_date` DESC ";
-        } else {
+        } else if ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' ORDER BY `ride_date` ASC ";
+        } else if ($data == 'desctotal_fare') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' ORDER BY `total_fare` DESC ";
+        } else if ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' ORDER BY `total_fare` ASC ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id'";
         }
         // return $sql;
         // exit();
@@ -240,7 +262,19 @@ class Ride{
             $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 7 DAY) and `customer_user_id` = '$id' ORDER BY `ride_date`";
         } else if ($sdata == 'month') {
 			$sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) and `customer_user_id` = '$id' ORDER BY `ride_date`";
+        } else if ($sdata == 'cedSUV') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedSUV' and `customer_user_id` = '$id' ";
+        }else if ($sdata == 'cedMini') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMini' and `customer_user_id` = '$id' ";
+        }else if ($sdata == 'cedRoyal') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedRoyal' and `customer_user_id` = '$id' ";
+        } else if ($sdata == 'cedMicro') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMicro' and `customer_user_id` = '$id' ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id'";
         }
+
+
         $res = mysqli_query($conn, $sql);
         while ($data = mysqli_fetch_assoc($res)) {
             $row[] = $data;
@@ -250,10 +284,16 @@ class Ride{
 
 	function sortUserPendingRide($data, $conn,$id) {
 		$row = array();
-        if ($data == 'ride_date') {
+        if ($data == 'descride_date') {
             $sql = "SELECT * FROM `tbl_ride`  WHERE `customer_user_id` = '$id' and `status`= '1' ORDER BY `ride_date` DESC  ";
-        } else {
+        } else if ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `customer_user_id` = '$id' and `status`= '1' ORDER BY `ride_date` ASC  ";
+        } else if  ($data == 'desctotal_fare') {
             $sql = "SELECT * FROM `tbl_ride`  WHERE `customer_user_id` = '$id' and `status`= '1' ORDER BY `total_fare` DESC ";
+        } else if ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `customer_user_id` = '$id' and `status`= '1' ORDER BY `total_fare` ASC ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `customer_user_id` = '$id' and `status`= '1' ";   
         }
         // return $sql;
         // exit();
@@ -273,13 +313,15 @@ class Ride{
         } else if ($sdata == 'month') {
 			$sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) and `customer_user_id` = '$id' and `status`='1' ORDER BY `ride_date`";
         } else if ($sdata == 'cedSUV') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedSUV' and `customer_user_id` = '$id' and `status`='1' ";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedSUV' and `customer_user_id` = '$id' and `status`='1' ";
         }else if ($sdata == 'cedMini') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedMini' and `customer_user_id` = '$id' and `status`='1' ";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMini' and `customer_user_id` = '$id' and `status`='1' ";
         }else if ($sdata == 'cedRoyal') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedRoyal' and `customer_user_id` = '$id' and `status`='1' ";
-        }else if ($sdata == 'cedMicro') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedMicro' and `customer_user_id` = '$id' and `status`='1' ";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedRoyal' and `customer_user_id` = '$id' and `status`='1' ";
+        } else if ($sdata == 'cedMicro') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMicro' and `customer_user_id` = '$id' and `status`='1' ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`='1' ";
         }
         $res = mysqli_query($conn, $sql);
         while ($data = mysqli_fetch_assoc($res)) {
@@ -290,10 +332,16 @@ class Ride{
 
 	function sortUserCompletedRide($data, $conn, $id) {
 		$row = array();
-        if ($data == 'ride_date') {
+        if ($data == 'descride_date') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '2' ORDER BY `ride_date` DESC ";
-        } else {
+        } else if  ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '2' ORDER BY `ride_date` ASC ";
+        } else if  ($data == 'desctotal_fare') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '2' ORDER BY `total_fare` DESC ";
+        } else if  ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '2' ORDER BY `total_fare` ASC ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '2'";
         }
         // return $sql;
         // exit();
@@ -306,10 +354,16 @@ class Ride{
 
 	function sortUserCancelledRide($data, $conn, $id) {
 		$row = array();
-        if ($data == 'ride_date') {
+        if ($data == 'descride_date') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '0' ORDER BY `ride_date` DESC ";
-        } else {
+        } else if ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '0' ORDER BY `ride_date` ASC ";            
+        } else if ($data == 'desctotal_fare') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '0' ORDER BY `total_fare` DESC ";
+        } else if ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '0' ORDER BY `total_fare` ASC ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`= '0'";
         }
         // return $sql;
         // exit();
@@ -323,13 +377,18 @@ class Ride{
 
 	function sortPendingRide($data, $conn) {
 		$row = array();
-        if ($data == 'ride_date') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `status` = '1' ORDER BY `ride_date` DESC  ";
+        if ($data == 'descride_date') {
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `status`= '1' ORDER BY `ride_date` DESC  ";
+        } else if ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `status`= '1' ORDER BY `ride_date` ASC  ";
+        } else if  ($data == 'desctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `status`= '1' ORDER BY `total_fare` DESC ";
+        } else if ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `status`= '1' ORDER BY `total_fare` ASC ";
         } else {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `status` = '1' ORDER BY `total_fare` DESC ";
+            $sql = "SELECT * FROM `tbl_ride`  WHERE `status`= '1' ";   
         }
-        // return $sql;
-        // exit();
+
         $res = mysqli_query($conn, $sql);
         while ($data = mysqli_fetch_assoc($res)) {
             $row[] = $data;
@@ -339,10 +398,16 @@ class Ride{
 
 	function sortCompletedRide($data, $conn) {
 		$row = array();
-        if ($data == 'ride_date') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `status` = '2' ORDER BY `ride_date` DESC  ";
+         if ($data == 'descride_date') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '2' ORDER BY `ride_date` DESC ";
+        } else if  ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '2' ORDER BY `ride_date` ASC ";
+        } else if  ($data == 'desctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '2' ORDER BY `total_fare` DESC ";
+        } else if  ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '2' ORDER BY `total_fare` ASC ";
         } else {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `status` = '2' ORDER BY `total_fare` DESC ";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '2'";
         }
         // return $sql;
         // exit();
@@ -355,10 +420,16 @@ class Ride{
 
 	function sortCancelledRide($data, $conn) {
 		$row = array();
-        if ($data == 'ride_date') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `status` = '0' ORDER BY `ride_date` DESC  ";
+         if ($data == 'descride_date') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '0' ORDER BY `ride_date` DESC ";
+        } else if ($data == 'ascride_date') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '0' ORDER BY `ride_date` ASC ";            
+        } else if ($data == 'desctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '0' ORDER BY `total_fare` DESC ";
+        } else if ($data == 'asctotal_fare') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '0' ORDER BY `total_fare` ASC ";
         } else {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `status` = '0' ORDER BY `total_fare` DESC ";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `status`= '0'";
         }
         // return $sql;
         // exit();
@@ -431,10 +502,22 @@ class Ride{
         $row = array();
 
         if ($sdata == 'week') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 7 DAY) ORDER BY `ride_date`";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 7 DAY)  and `status`='1' ORDER BY `ride_date`";
         } else if ($sdata == 'month') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE MONTH(`ride_date`) = MONTH(DATE_ADD(NOW(), INTERVAL -1 MONTH))";
+            $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) and  `status`='1' ORDER BY `ride_date`";
+        } else if ($sdata == 'cedSUV') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedSUV' and  `status`='1' ";
+        }else if ($sdata == 'cedMini') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMini' and  `status`='1' ";
+        }else if ($sdata == 'cedRoyal') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedRoyal' and `status`='1' ";
+        } else if ($sdata == 'cedMicro') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMicro'  and `status`='1' ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE  `status`='1' ";
         }
+
+
         $res = mysqli_query($conn, $sql);
         while ($data = mysqli_fetch_assoc($res)) {
             $row[] = $data;
@@ -450,14 +533,16 @@ class Ride{
             $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 7 DAY) and `customer_user_id` = '$id' and `status`='2' ORDER BY `ride_date`";
         } else if ($sdata == 'month') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) and `customer_user_id` = '$id' and `status`='2' ORDER BY `ride_date`";
-        } else if ($sdata == 'cedsuv') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedsuv' and `customer_user_id` = '$id' and `status`='2' ";
-        }else if ($sdata == 'cedmini') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedmini' and `customer_user_id` = '$id' and `status`='2' ";
-        }else if ($sdata == 'cedsuv') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedroyal' and `customer_user_id` = '$id' and `status`='2' ";
-        }else if ($sdata == 'cedsuv') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedmicro' and `customer_user_id` = '$id' and `status`='2' ";
+        } else if ($sdata == 'cedSUV') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedSUV' and `customer_user_id` = '$id' and `status`='2' ";
+        }else if ($sdata == 'cedMini') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMini' and `customer_user_id` = '$id' and `status`='2' ";
+        }else if ($sdata == 'cedRoyal') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedRoyal' and `customer_user_id` = '$id' and `status`='2' ";
+        }else if ($sdata == 'cedMicro') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMicro' and `customer_user_id` = '$id' and `status`='2' ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`='2' ";
         }
         $res = mysqli_query($conn, $sql);
         while ($data = mysqli_fetch_assoc($res)) {
@@ -473,21 +558,60 @@ class Ride{
         if ($sdata == 'week') {
             $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 7 DAY) and `customer_user_id` = '$id' and `status`='0' ORDER BY `ride_date`";
         } else if ($sdata == 'month') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) and `customer_user_id` = '$id' and `status`='0' ORDER BY `ride_date`";
-        } else if ($sdata == 'cedsuv') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedsuv' and `customer_user_id` = '$id' and `status`='0' ";
-        }else if ($sdata == 'cedmini') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedmini' and `customer_user_id` = '$id' and `status`='0' ";
-        }else if ($sdata == 'cedsuv') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedroyal' and `customer_user_id` = '$id' and `status`='0' ";
-        }else if ($sdata == 'cedsuv') {
-            $sql = "SELECT * FROM `tbl_ride` WHERE `cabtype` = 'cedmicro' and `customer_user_id` = '$id' and `status`='0' ";
+			$sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) and `customer_user_id` = '$id' and `status`='0' ORDER BY `ride_date`";
+        } else if ($sdata == 'cedSUV') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedSUV' and `customer_user_id` = '$id' and `status`='0' ";
+        }else if ($sdata == 'cedMini') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMini' and `customer_user_id` = '$id' and `status`='0' ";
+        }else if ($sdata == 'cedRoyal') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedRoyal' and `customer_user_id` = '$id' and `status`='0' ";
+        } else if ($sdata == 'cedMicro') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMicro' and `customer_user_id` = '$id' and `status`='0' ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `customer_user_id` = '$id' and `status`='0' ";
         }
         $res = mysqli_query($conn, $sql);
         while ($data = mysqli_fetch_assoc($res)) {
             $row[] = $data;
         }
         return $row;
+    }
+
+     function  filterCancelledRide($sdata, $conn)
+    {
+        $row = array();
+
+        if ($sdata == 'week') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 7 DAY) and `status`='0' ORDER BY `ride_date`";
+        } else if ($sdata == 'month') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `ride_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) and `status`='0' ORDER BY `ride_date`";
+        } else if ($sdata == 'cedSUV') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedSUV' and `status`='0' ";
+        }else if ($sdata == 'cedMini') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMini' and `status`='0' ";
+        }else if ($sdata == 'cedRoyal') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedRoyal' and `status`='0' ";
+        } else if ($sdata == 'cedMicro') {
+            $sql = "SELECT * FROM `tbl_ride` WHERE `cab` = 'cedMicro' and `status`='0' ";
+        } else {
+            $sql = "SELECT * FROM `tbl_ride` WHERE  and `status`='0' ";
+        }
+        $res = mysqli_query($conn, $sql);
+        while ($data = mysqli_fetch_assoc($res)) {
+            $row[] = $data;
+        }
+        return $row;
+    }
+
+    function deletePendingRide($loc,$conn){
+     
+        $sql = "DELETE FROM `tbl_ride` WHERE `ride_id`= '$loc' ";
+      
+        if ($conn->query($sql) === TRUE) {
+        echo "Record deleted successfully";
+        } else {
+        echo "Error deleting record: " . $conn->error;
+        }
     }
 }
 

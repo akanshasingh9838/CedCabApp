@@ -9,9 +9,10 @@ if(!$_SESSION['userdata']) {
 }   
 $rideobj =  new Ride();
 $user = new user();
-if(isset($_GET['pendingrides']) && $_GET['pendingrides'] == 'pendingrides'){  
+if(isset($_GET['pendingrides']) && $_GET['pendingrides'] == 'pendingrides'){
   $pendingrides =$rideobj -> userPendingRide($dbcon-> conn);
 }
+
 if(isset($_GET['completedrides']) && $_GET['completedrides'] == 'completedrides'){  
   $completedrides =$rideobj -> userCompletedRide($dbcon-> conn);
 }
@@ -29,6 +30,11 @@ if(isset($_GET['logid'])){
     header('Location:login.php');
   }
 
+if(isset($_GET['deleteid']) && $_GET['action'] == 'delete'){  
+  $item = $_GET['deleteid'];
+  $rideobj-> deletePendingRide($item ,$dbcon-> conn);
+  header('Location:userfunc.php?pendingrides=pendingrides');
+}
 // if(isset($_GET['updateinfo'])){ 
 //  $msg = $user-> updateInfoBtn($_SESSION['user_id'],$dbcon -> conn);
 //   }
@@ -41,9 +47,15 @@ if (isset($_POST['updateinfo'])) {
   $mobile = $_POST['mobile'];
   $id = $_POST['id'];
   // echo $name, $mobile, $id;
-  $msg = $user->updateUserInfo($name, $mobile, $id, $dbcon->conn);
-  echo $msg;
-  header('Location:userfunc.php?updateinfo=updateinfo');
+  if(preg_match('/^[0-9]{10}+$/', $mobile)) {  
+    $msg = $user->updateUserInfo($name, $mobile, $id, $dbcon->conn);
+  }
+  else{
+     echo "<script>alert('Enter valid mobile number');</script>";
+  }
+
+  echo "<script>alert('".$msg."');</script>";
+  // header('Location:userfunc.php?updateinfo=updateinfo');
 }
 $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
 ?>
@@ -62,6 +74,20 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
   <script src="file.js"></script>
 </head>
 <body>
+
+  <header class="headerall">
+        <nav class="navbar navbar-expand-lg navbar-light p-3 ">
+          <a href="index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3" aria-hidden="true"></i><span class="display-5 text-success cab">CedCab</span></a>
+          <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar_menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        <a href="user_dashboard.php" class="btn btn-success ml-auto" >Dashboard</a>
+        <a href="userfunc.php?logid=logout" class="btn btn-success ml-3" >Log OUT</a>   
+          <!-- <a href="user_dashboard.php?logid=logout" class="btn btn-primary ml-auto mr-5" >Log OUT</a> -->
+        </nav>
+      </header>
+
+
   <div class="btn1">
     <span class="fa fa-bars"></span>
   </div>
@@ -92,9 +118,7 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
 
   <div id="main">
     <section id="pendingrequest"></section>
-    <h1><?php echo "Welcome ".$_SESSION['userdata']['username'] ?>
-    <a href="user_dashboard.php" class="btn btn-primary float-right mr-5" >Dashboard</a>
-    <a href="userfunc.php?logid=logout" class="btn btn-primary float-right mr-3" >Log OUT</a></h1>    
+    <h1><?php echo "Welcome ".$_SESSION['userdata']['username'] ?></h1> 
     <?php if(isset($_GET['pendingrides']) && $_GET['pendingrides'] == 'pendingrides'){  ?>
      <?php if(isset($_SESSION['userdata'])){ ?>
             <!-- <li class="nav-item">
@@ -107,19 +131,22 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
         <label for="">Sort</label>
         <select class="sortUserPendingRide" >
           <option value="">select</option>
-          <option value="ride_date">By Ride Date</option>
-          <option value="total_fare">By Fare</option>
+          <option value="descride_date">By Ride Date In DESC Order</option>
+          <option value="ascride_date">By Ride Date In ASC Order</option>
+          <option value="desctotal_fare">By Fare In DESC Order</option>
+          <option value="asctotal_fare">By Fare In ASC Order</option>
         </select>
         <label for="">Filter</label>
           <select class="filterUserPendingRide" >
             <option value="">select</option>
             <option value="week">Last Week</option>
-         <!--  <option value="month">Last Month</option>
-          <option value="cedsuv">Ced SUV</option>
-          <option value="cedmicro">Ced Micro</option>
-          <option value="cedmini">Ced Mini</option>
-          <option value="cedroyal">Ced Royal</option> -->
+          <option value="month">Last Month</option>
+          <option value="cedSUV">Ced SUV</option>
+          <option value="cedMicro">Ced Micro</option>
+          <option value="cedMini">Ced Mini</option>
+          <option value="cedRoyal">Ced Royal</option>
           </select>
+          <a href="userfunc.php?pendingrides=pendingrides" class="btn btn-danger " >Clear Filter</a>
            <div id="allRideResult"></div>
         <table id="userAllRide" class="table table-bordered ml-5 mr-5">
           <tr>
@@ -128,10 +155,11 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
             <th>Pickup Location</th>
             <th>Drop Location</th>
             <th>CabType</th>
-              <th>Distance Travelled</th>
-              <th>Luggage</th>
-              <th>Total Fare</th>
-              <th>Status</th>
+            <th>Distance Travelled</th>
+            <th>Luggage</th>
+            <th>Total Fare</th>
+            <th>Status</th>
+             <th>Cancel Ride</th>
           </tr>
           <?php
           $i = 1;
@@ -146,6 +174,8 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
               <td><?php echo $row['luggage'] ?></td>
               <td><?php echo $row['total_fare'] ?></td>
               <td><?php if ($row['status'] == 1) {echo "Pending";}  ?></td>
+              <td><a href="userfunc.php?deleteid= <?php echo $row['ride_id']?> & action=delete" title="Delete"><i class="fa fa-trash ml-4 h4" aria-hidden="true" onclick= "checkdelete()"></i></a></td>
+              
             </tr>
 
           <?php } ?>
@@ -163,19 +193,22 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
             <label for="">Sort</label>
             <select class="sortUserCompletedRide" >
               <option value="">select</option>
-              <option value="ride_date">By Ride Date</option>
-              <option value="total_fare">By Fare</option>
+              <option value="descride_date">By Ride Date In DESC Order</option>
+              <option value="ascride_date">By Ride Date In ASC Order</option>
+              <option value="desctotal_fare">By Fare In DESC Order</option>
+              <option value="asctotal_fare">By Fare In ASC Order</option>
               </select>
             <label for="">Filter</label>
               <select class="filterUserCompletedRide" >
               <option value="">select</option>
               <option value="week">Last Week</option>
               <option value="month">Last Month</option>
-              <option value="cedsuv">Ced SUV</option>
-              <option value="cedmicro">Ced Micro</option>
-              <option value="cedmini">Ced Mini</option>
-              <option value="cedroyal">Ced Royal</option>
+              <option value="cedSUV">Ced SUV</option>
+              <option value="cedMicro">Ced Micro</option>
+              <option value="cedMini">Ced Mini</option>
+              <option value="cedRoyal">Ced Royal</option>
               </select>
+               <a href="userfunc.php?completedrides=completedrides" class="btn btn-danger " >Clear Filter</a>
                <div id="allRideResult"></div>
             <table id="userAllRide" class="table table-bordered ml-5 mr-5">
               <tr>
@@ -218,19 +251,22 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
             <label for="">Sort</label>
             <select class="sortUserCancelledRide" >
               <option value="">select</option>
-              <option value="ride_date">By Ride Date</option>
-              <option value="total_fare">By Fare</option>
+              <option value="descride_date">By Ride Date In DESC Order</option>
+              <option value="ascride_date">By Ride Date In ASC Order</option>
+              <option value="desctotal_fare">By Fare In DESC Order</option>
+              <option value="asctotal_fare">By Fare In ASC Order</option>
               </select>
             <label for="">Filter</label>
               <select class="filterUserCancelledRide" >
               <option value="">select</option>
               <option value="week">Last Week</option>
               <option value="month">Last Month</option>
-              <option value="cedsuv">Ced SUV</option>
-              <option value="cedmicro">Ced Micro</option>
-              <option value="cedmini">Ced Mini</option>
-              <option value="cedroyal">Ced Royal</option>
+              <option value="cedSUV">Ced SUV</option>
+              <option value="cedMicro">Ced Micro</option>
+              <option value="cedMini">Ced Mini</option>
+              <option value="cedRoyal">Ced Royal</option>
               </select>
+              <a href="userfunc.php?cancelledrides=cancelledrides" class="btn btn-danger " >Clear Filter</a>
                <div id="allRideResult"></div>
             <table id="userAllRide" class="table table-bordered ml-5 mr-5">
               <tr>
@@ -270,8 +306,10 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
          <label for="">Sort</label>
           <select class="sortUserAllRide" >
             <option value="">select</option>
-            <option value="ride_date">By Ride Date</option>
-            <option value="total_fare">By Fare</option>
+            <option value="descride_date">By Ride Date In DESC Order</option>
+          <option value="ascride_date">By Ride Date In ASC Order</option>
+          <option value="desctotal_fare">By Fare In DESC Order</option>
+          <option value="asctotal_fare">By Fare In ASC Order</option>
             </select>
           <label for="">Filter</label>
             <select class="filterAllRide" >
@@ -283,6 +321,7 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
               <option value="cedMini">Ced Mini</option>
               <option value="cedRoyal">Ced Royal</option>
             </select>
+            <a href="userfunc.php?allrides=allrides" class="btn btn-danger " >Clear Filter</a>
           <div id="allRideResult"></div>
             <table id="userAllRide" class="table table-bordered ml-5 mr-5">
               <tr>
@@ -329,11 +368,13 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
                 <input type="hidden" name="id" value="<?php echo $data['user_id']; ?>">
                 <div class="form-group" >
                   <label for="exampleInputEmail1">Name</label>
-                  <input type="text" class="form-control" name="name" value="<?php echo $data['name']; ?>" placeholder="Enter name">
+                  <input type="text" class="form-control" name="name" onkeypress="return onlytext()" value="<?php echo $data['name']; ?>" placeholder="Enter name">
                 </div>
                 <div class="form-group">
                   <label for="mobile">Mobile No.</label>
                   <input type="text" class="form-control" name="mobile" value="<?php echo $data['mobile']; ?>" placeholder="Enter your no.">
+                  <!-- <input type="tel" class="form-control"  name="mobile" value="<?php echo $data['mobile']; ?>" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="Enter your no."> -->
+                  <!-- type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" -->
                 </div>
                 
                 <input type="submit" class="btn btn-primary" name="updateinfo" value="Submit">
@@ -391,19 +432,13 @@ $data = $user->fetchDataUpdate($_SESSION['userdata']['user_id'], $dbcon->conn);
         </div>
       </div>
     </footer>
-
 </div>
-
-
-
-
   
 <script>
   $('.btn1').click(function(){
     $(this).toggleClass("click");
     $('.sidebar').toggleClass("show");
     $('#main').toggleClass("show3");
-
   });
 
   $('.feat-btn').click(function(){

@@ -8,20 +8,24 @@ $message="";
 $errors=array();
 if(isset($_POST['submit'])){
 	$datesignup=date("Y/m/d");
-	$user_name=isset($_POST['user_name'])?$_POST['user_name']:'';
-	$name=isset($_POST['name'])?$_POST['name']:'';
-	$password=isset($_POST['password'])?$_POST['password']:'';
-	$repassword=isset($_POST['repassword'])?$_POST['repassword']:'';
-	$mobile=isset($_POST['mobile'])?$_POST['mobile']:'';
+	$user_name=trim(isset($_POST['user_name'])?$_POST['user_name']:'');
+	$name=trim(isset($_POST['name'])?$_POST['name']:'');
+	$password=trim(isset($_POST['password'])?$_POST['password']:'');
+	$repassword=trim(isset($_POST['repassword'])?$_POST['repassword']:'');
+	$mobile=trim(isset($_POST['mobile'])?$_POST['mobile']:'');
 	if($password != $repassword){
-		$errors[]=array("input"=>"password","msg"=>"password didn't match");
-		echo "password didn't match";
+		echo "<script>alert('password did not match');</script>";
 	}
 	else if(strlen($password) < 6){
-		echo "<center><h3> Password length should be greater than 6 characters</h3></center>";	
+		echo "<script>alert('Password length should be greater than 6 characters');</script>";
+	}
+	else if(strlen($mobile) < 11 || strlen($mobile) >10 ){
+		echo "<script>alert('Mobile No. should be of 10 digits');</script>";
 	}
 	else{
-	$details -> signup($user_name,$name,$password,$mobile,$datesignup,$dbcon-> conn);			
+	$details -> signup($user_name,$name,$password,$mobile,$datesignup,$dbcon-> conn);
+	// echo "<script>alert('Successfully Signed Up');</script>";	
+	header('Location:signup.php');
 	}
 }
 ?>
@@ -38,12 +42,13 @@ if(isset($_POST['submit'])){
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+	<script src="file.js" ></script>
 </head>
 <body>
 	<div id="message"><?php echo $details -> message; ?></div>
-	 <header>
+	 <header class="headerall">
         <nav class="navbar navbar-expand-lg navbar-light  p-2 ">
-          <a href="#" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3" aria-hidden="true"></i><span class="display-5 text-success cab">CedCab</span></a>
+          <a href="index.php" class="navbar-brand pl-5"><i class="fa fa-taxi mr-3" aria-hidden="true"></i><span class="display-5 text-success cab">CedCab</span></a>
           <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar_menu">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -57,16 +62,13 @@ if(isset($_POST['submit'])){
 					<label for="user_name">Username: <input type="text" name="user_name" required></label>
 				</p>
 				<p>
-					<label for="user_name">Name: <input type="text" name="name" required></label>
+					<label for="user_name">Name: <input type="text" name="name" required onkeypress="return onlytext()"></label>
 				</p>
 				<p>
 					<label for="password">Password: <input type="password" name="password" required ></label>
 				</p>
 				<p>
 					<label for="repassword">Re-Password: <input type="password" name="repassword" required ></label>
-				</p>
-				<p>
-					<label for="date">Date of SignUp: <input type="date" name="date" required></label>
 				</p>
 				<p>
 					<label for="mobile">Mobile: <input type="text" name="mobile" onkeypress="return onlynumber(event)"   required></label>
@@ -80,5 +82,27 @@ if(isset($_POST['submit'])){
 				</p>
 			</form>
 		</div>	 
+
+	
+    <footer class="text-center">
+      <div class="row pt-4">
+        <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4  icons">
+          <i class="fab fa-facebook pr-4"></i>
+          <i class="fab fa-twitter-square pr-4"></i>
+          <i class="fas fa-camera"></i>
+        </div>
+        <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4 mt-2">
+          <p class="h2 text-success">CedCab</p>
+          <p>All rights are reserved Copyright@2020</p>
+        </div>
+        <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4 mt-2">
+          <nav>
+            <a href="#" class="pr-4">Features</a>
+            <a href="#" class="pr-4">Reviews</a>
+            <a href="#" >Sign Up</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
 </body>
 </html>
